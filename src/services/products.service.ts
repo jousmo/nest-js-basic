@@ -30,4 +30,23 @@ export class ProductsService {
       price: 15,
     };
   }
+
+  createProduct(payload: object): object {
+    return {
+      ...payload,
+    };
+  }
+
+  updateProduct(productId: number, payload: object) {
+    return {
+      id: productId,
+      ...payload,
+    };
+  }
+
+  deleteProduct(productId: number) {
+    return {
+      id: productId,
+    };
+  }
 }
