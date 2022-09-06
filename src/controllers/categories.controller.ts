@@ -9,6 +9,11 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CategoriesService } from '../services/categories.service';
+import {
+  Category,
+  CategoryWithPagination,
+  CategoryWithProduct,
+} from '../entities/category.entity';
 
 @Controller('categories')
 export class CategoriesController {
@@ -20,21 +25,22 @@ export class CategoriesController {
     @Query('limit') limit: number,
     @Query('offset') offset: number,
   ): any {
-    const categories = this.categoriesService.getCategories(limit, offset);
+    const categories: CategoryWithPagination =
+      this.categoriesService.getCategories(limit, offset);
     response.status(200).send(categories);
   }
 
   @Get(':categoryId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getCategory(@Param('categoryId') categoryId: string): object {
+  getCategory(@Param('categoryId') categoryId: number): Category {
     return this.categoriesService.getCategory(categoryId);
   }
 
   @Get(':categoryId/products/:productId')
   getProductsByCategory(
-    @Param('categoryId') categoryId: string,
-    @Param('productId') productId: string,
-  ): object {
+    @Param('categoryId') categoryId: number,
+    @Param('productId') productId: number,
+  ): CategoryWithProduct {
     return this.categoriesService.getProductsByCategory(categoryId, productId);
   }
 }

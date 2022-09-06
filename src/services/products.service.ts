@@ -1,50 +1,75 @@
 import { Injectable } from '@nestjs/common';
+import { Product, ProductWithPagination } from '../entities/product.entity';
+import { products } from '../db/products.db';
 
 @Injectable()
 export class ProductsService {
-  getProducts(limit = 2, offset = 0, brand = ''): object {
+  #products: Product[] = products;
+
+  #findIndex(productId: number): number {
+    const index: number = this.#products.findIndex(
+      (product) => product.id === productId,
+    );
+
+    if (index === -1) throw new Error('product not found');
+
+    return index;
+  }
+
+  getProducts(limit = 10, offset = 0, brand = ''): ProductWithPagination {
+    let allProducts: Product[] = this.#products;
+
+    if (limit && offset) {
+      allProducts = allProducts.slice(offset, limit);
+    }
+
+    if (brand) {
+      allProducts = allProducts.filter(
+        (product) => product.name.toLowerCase() === brand.toLowerCase(),
+      );
+    }
+
     return {
-      limit,
-      offset,
+      limit: +limit,
+      offset: +offset,
       brand,
-      products: [
-        {
-          id: 1,
-          name: 'Pepsi',
-          price: 15,
-        },
-        {
-          id: 2,
-          name: 'Coca Cola',
-          price: 16,
-        },
-      ],
+      count: allProducts.length,
+      products: allProducts,
     };
   }
 
-  getProduct(params: any): object {
+  getProduct(params: any): Product {
     const { productId } = params;
-    return {
-      id: productId,
-      name: 'Pepsi',
-      price: 15,
-    };
+    this.#findIndex(+productId);
+
+    return this.#products.find((product) => product.id === +productId);
   }
 
-  createProduct(payload: object): object {
-    return {
+  createProduct(payload: Product): Product {
+    const newProduct: Product = {
+      ...payload,
+      id: this.#products.length + 1,
+    };
+
+    this.#products.push(newProduct);
+    return newProduct;
+  }
+
+  updateProduct(productId: number, payload: Product): Product {
+    const index: number = this.#findIndex(+productId);
+
+    this.#products[index] = {
+      ...this.#products[index],
       ...payload,
     };
+
+    return this.#products[index];
   }
 
-  updateProduct(productId: number, payload: object) {
-    return {
-      id: productId,
-      ...payload,
-    };
-  }
+  deleteProduct(productId: number): object {
+    const index: number = this.#findIndex(+productId);
+    this.#products.splice(index, 1);
 
-  deleteProduct(productId: number) {
     return {
       id: productId,
     };

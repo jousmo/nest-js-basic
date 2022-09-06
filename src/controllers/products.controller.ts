@@ -9,6 +9,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
+import { Product, ProductWithPagination } from '../entities/product.entity';
 
 @Controller('products')
 export class ProductsController {
@@ -19,25 +20,25 @@ export class ProductsController {
     @Query('limit') limit: number,
     @Query('offset') offset: number,
     @Query('brand') brand: string,
-  ): object {
+  ): ProductWithPagination {
     return this.productsService.getProducts(limit, offset, brand);
   }
 
   @Get(':productId')
-  getProduct(@Param() params: any): object {
+  getProduct(@Param() params: any): Product {
     return this.productsService.getProduct(params);
   }
 
   @Post()
-  createProduct(@Body() payload: object): object {
+  createProduct(@Body() payload: Product): Product {
     return this.productsService.createProduct(payload);
   }
 
   @Put(':productId')
   updateProduct(
     @Param('productId') productId: number,
-    @Body() payload: object,
-  ): object {
+    @Body() payload: Product,
+  ): Product {
     return this.productsService.updateProduct(productId, payload);
   }
 
