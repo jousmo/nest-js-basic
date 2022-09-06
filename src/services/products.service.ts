@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product, ProductWithPagination } from '../entities/product.entity';
 import { products } from '../db/products.db';
 
@@ -11,7 +11,7 @@ export class ProductsService {
       (product) => product.id === productId,
     );
 
-    if (index === -1) throw new Error('product not found');
+    if (index === -1) throw new NotFoundException('product not found');
 
     return index;
   }

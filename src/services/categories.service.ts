@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Category,
   CategoryWithPagination,
@@ -20,7 +20,7 @@ export class CategoriesService {
       (category) => category.id === categoryId,
     );
 
-    if (index === -1) throw new Error('category not found');
+    if (index === -1) throw new NotFoundException('category not found');
 
     return index;
   }
@@ -30,7 +30,7 @@ export class CategoriesService {
       (product) => product.id === productId,
     );
 
-    if (index === -1) throw new Error('product not found');
+    if (index === -1) throw new NotFoundException('product not found');
 
     return index;
   }
@@ -72,7 +72,8 @@ export class CategoriesService {
       }
     }
 
-    if (!existProduct) throw new Error('product in category not found');
+    if (!existProduct)
+      throw new NotFoundException('product in category not found');
 
     const category: Category = this.#categories.find(
       (category) => category.id === +categoryId,
