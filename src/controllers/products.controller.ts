@@ -7,6 +7,8 @@ import {
   Body,
   Put,
   Delete,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
 import { Product, ProductWithPagination } from '../entities/product.entity';
@@ -17,8 +19,8 @@ export class ProductsController {
 
   @Get()
   getProducts(
-    @Query('limit') limit: number,
-    @Query('offset') offset: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
     @Query('brand') brand: string,
   ): ProductWithPagination {
     return this.productsService.getProducts(limit, offset, brand);
@@ -36,14 +38,14 @@ export class ProductsController {
 
   @Put(':productId')
   updateProduct(
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
     @Body() payload: Product,
   ): Product {
     return this.productsService.updateProduct(productId, payload);
   }
 
   @Delete(':productId')
-  deleteProduct(@Param('productId') productId: number): object {
+  deleteProduct(@Param('productId', ParseIntPipe) productId: number): object {
     return this.productsService.deleteProduct(productId);
   }
 }

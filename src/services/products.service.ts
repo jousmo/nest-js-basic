@@ -16,7 +16,11 @@ export class ProductsService {
     return index;
   }
 
-  getProducts(limit = 10, offset = 0, brand = ''): ProductWithPagination {
+  getProducts(
+    limit: number,
+    offset: number,
+    brand = '',
+  ): ProductWithPagination {
     let allProducts: Product[] = this.#products;
 
     if (limit && offset) {
@@ -30,8 +34,8 @@ export class ProductsService {
     }
 
     return {
-      limit: +limit,
-      offset: +offset,
+      limit,
+      offset,
       brand,
       count: allProducts.length,
       products: allProducts,
@@ -56,7 +60,7 @@ export class ProductsService {
   }
 
   updateProduct(productId: number, payload: Product): Product {
-    const index: number = this.#findIndex(+productId);
+    const index: number = this.#findIndex(productId);
 
     this.#products[index] = {
       ...this.#products[index],
@@ -67,7 +71,7 @@ export class ProductsService {
   }
 
   deleteProduct(productId: number): object {
-    const index: number = this.#findIndex(+productId);
+    const index: number = this.#findIndex(productId);
     this.#products.splice(index, 1);
 
     return {

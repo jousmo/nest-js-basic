@@ -35,7 +35,7 @@ export class CategoriesService {
     return index;
   }
 
-  getCategories(limit = 10, offset = 0): CategoryWithPagination {
+  getCategories(limit: number, offset: number): CategoryWithPagination {
     let allCategories: Category[] = this.#categories;
 
     if (limit && offset) {
@@ -43,30 +43,30 @@ export class CategoriesService {
     }
 
     return {
-      limit: +limit,
-      offset: +offset,
+      limit,
+      offset,
       count: allCategories.length,
       categories: allCategories,
     };
   }
 
   getCategory(categoryId: number): Category {
-    this.#findIndexCategory(+categoryId);
+    this.#findIndexCategory(categoryId);
 
-    return this.#categories.find((category) => category.id === +categoryId);
+    return this.#categories.find((category) => category.id === categoryId);
   }
 
   getProductsByCategory(
     categoryId: number,
     productId: number,
   ): CategoryWithProduct {
-    this.#findIndexCategory(+categoryId);
-    this.#findIndexProducts(+productId);
+    this.#findIndexCategory(categoryId);
+    this.#findIndexProducts(productId);
     let existProduct = false;
 
     for (const categories of this.#categoriesWithProducts) {
       for (const id of categories.products) {
-        if (+productId === id) {
+        if (productId === id) {
           existProduct = true;
         }
       }
@@ -76,11 +76,11 @@ export class CategoriesService {
       throw new NotFoundException('product in category not found');
 
     const category: Category = this.#categories.find(
-      (category) => category.id === +categoryId,
+      (category) => category.id === categoryId,
     );
 
     const product: Product = this.#products.find(
-      (product) => product.id === +productId,
+      (product) => product.id === productId,
     );
 
     return {

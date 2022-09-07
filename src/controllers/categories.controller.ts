@@ -6,6 +6,8 @@ import {
   HttpStatus,
   Res,
   Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CategoriesService } from '../services/categories.service';
@@ -22,8 +24,8 @@ export class CategoriesController {
   @Get()
   getCategories(
     @Res() response: Response,
-    @Query('limit') limit: number,
-    @Query('offset') offset: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
   ): any {
     const categories: CategoryWithPagination =
       this.categoriesService.getCategories(limit, offset);
@@ -32,14 +34,14 @@ export class CategoriesController {
 
   @Get(':categoryId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getCategory(@Param('categoryId') categoryId: number): Category {
+  getCategory(@Param('categoryId', ParseIntPipe) categoryId: number): Category {
     return this.categoriesService.getCategory(categoryId);
   }
 
   @Get(':categoryId/products/:productId')
   getProductsByCategory(
-    @Param('categoryId') categoryId: number,
-    @Param('productId') productId: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+    @Param('productId', ParseIntPipe) productId: number,
   ): CategoryWithProduct {
     return this.categoriesService.getProductsByCategory(categoryId, productId);
   }
