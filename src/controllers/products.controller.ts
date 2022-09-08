@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
 import { Product, ProductWithPagination } from '../entities/product.entity';
+import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -32,14 +33,14 @@ export class ProductsController {
   }
 
   @Post()
-  createProduct(@Body() payload: Product): Product {
+  createProduct(@Body() payload: CreateProductDto): Product {
     return this.productsService.createProduct(payload);
   }
 
   @Put(':productId')
   updateProduct(
     @Param('productId', ParseIntPipe) productId: number,
-    @Body() payload: Product,
+    @Body() payload: UpdateProductDto,
   ): Product {
     return this.productsService.updateProduct(productId, payload);
   }
